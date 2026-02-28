@@ -10,6 +10,13 @@ import { morganStream } from './shared/utils/logger';
 import { apiLimiter, globalErrorHandler, notFoundHandler } from './shared/middleware/index';
 import authRouter from './features/auth/auth.route';
 import shopRouter from './features/shop/shop.route';
+import productRouter from './features/product/product.route';
+import supplierRouter from './features/supplier/supplier.route';
+import purchaseRouter from './features/purchase/purchase.route';
+import saleRouter from './features/sale/sale.route';
+import expenseRouter from './features/expense/expense.route';
+import reportRouter from './features/report/report.route';
+import profileRouter from './features/profile/profile.route';
 
 
 const createApp = (): Application => {
@@ -38,7 +45,13 @@ const createApp = (): Application => {
   app.use(compression());
 
   // ─── HTTP Logger ─────────────────────────────────────────────────────────────
-  app.use(morgan(config.isDev ? 'dev' : 'combined', { stream: morganStream }));
+  if (config.isDev) {
+    // Development: colorful console logging
+    app.use(morgan('dev'));
+  } else {
+    // Production: winston file logging
+    app.use(morgan('combined', { stream: morganStream }));
+  }
 
   // ─── Rate Limiter ─────────────────────────────────────────────────────────────
   app.use(`/api/${config.apiVersion}`, apiLimiter);
@@ -55,6 +68,13 @@ const createApp = (): Application => {
   // ─── API Routes (added as features are built) ─────────────────────────────────
   app.use(`/api/${config.apiVersion}/auth`, authRouter);
   app.use(`/api/${config.apiVersion}/shop`, shopRouter);
+  app.use(`/api/${config.apiVersion}/products`, productRouter);
+  app.use(`/api/${config.apiVersion}/suppliers`, supplierRouter);
+  app.use(`/api/${config.apiVersion}/purchases`, purchaseRouter);
+  app.use(`/api/${config.apiVersion}/sales`, saleRouter);
+  app.use(`/api/${config.apiVersion}/expenses`, expenseRouter);
+  app.use(`/api/${config.apiVersion}/reports`, reportRouter);
+  app.use(`/api/${config.apiVersion}/profile`, profileRouter);
 
 
   // ─── 404 & Error Handlers ─────────────────────────────────────────────────────

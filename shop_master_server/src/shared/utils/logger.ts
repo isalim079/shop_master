@@ -21,7 +21,7 @@ const prodFormat = combine(
 );
 
 export const logger = winston.createLogger({
-  level: config.isDev ? 'debug' : 'info',
+  level: config.isDev ? 'http' : 'info',
   format: config.isDev ? devFormat : prodFormat,
   transports: [
     new winston.transports.Console(),
